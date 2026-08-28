@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ziro — El copiloto de tu Primera Comunión</title>
+<meta name="description" content="Ziro acompaña a niños, catequistas y familias en el camino hacia la Primera Comunión con una app interactiva, misiones diarias y un corazón lleno de fe.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Manrope:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- Textura de grano + halo de fondo, decorativo -->
+<div class="bg-glow bg-glow--one" aria-hidden="true"></div>
+<div class="bg-glow bg-glow--two" aria-hidden="true"></div>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="nav">
+  <div class="nav__inner">
+    <a href="#top" class="nav__brand">
+      <span class="nav__paw" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none"><path d="M24 27c-6.5 0-12.5 5.6-12.5 11.2 0 3.1 2.5 4.6 5.6 3.6 2.4-.8 4.5-1.4 6.9-1.4s4.5.6 6.9 1.4c3.1 1 5.6-.5 5.6-3.6C36.5 32.6 30.5 27 24 27Z" fill="currentColor"/><ellipse cx="10.5" cy="20" rx="4.6" ry="6" fill="currentColor"/><ellipse cx="37.5" cy="20" rx="4.6" ry="6" fill="currentColor"/><ellipse cx="18" cy="11" rx="4" ry="5.4" fill="currentColor"/><ellipse cx="30" cy="11" rx="4" ry="5.4" fill="currentColor"/></svg>
+      </span>
+      <span class="nav__word">Ziro</span>
+    </a>
+
+    <nav class="nav__links" aria-label="Navegación principal">
+      <a href="#conoce">Conoce a Ziro</a>
+      <a href="#demo">Demo en vivo</a>
+      <a href="#perfiles">Para tu parroquia</a>
+      <a href="#novedades">Novedades</a>
+      <a href="#contacto">Contacto</a>
+    </nav>
+
+    <div class="nav__cta">
+      <a href="#contacto" class="btn btn--ghost btn--sm">Pre-registrar parroquia</a>
+    </div>
+
+    <button class="nav__burger" id="burger" aria-label="Abrir menú" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <div class="nav__mobile" id="navMobile">
+    <a href="#conoce">Conoce a Ziro</a>
+    <a href="#demo">Demo en vivo</a>
+    <a href="#perfiles">Para tu parroquia</a>
+    <a href="#novedades">Novedades</a>
+    <a href="#contacto">Contacto</a>
+    <a href="#contacto" class="btn btn--gold btn--sm">Pre-registrar parroquia</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" id="hero">
+    <div class="hero__inner">
+
+      <div class="hero__copy reveal">
+        <p class="eyebrow"><span class="eyebrow__dot"></span>Nueva versión · Catequesis interactiva</p>
+        <h1 class="hero__title">
+          La fe también se <span class="hero__title-em">camina</span>,
+          <br>un paso a la vez.
+        </h1>
+        <p class="hero__lede">
+          Ziro es el zorrito guía que convierte la preparación para la Primera Comunión
+          en un camino de huellitas, misiones y pequeñas victorias — dentro de una app
+          que catequistas y familias abren todos los días.
+        </p>
+
+        <div class="hero__actions">
+          <button class="btn btn--gold btn--lg" id="tryDemoBtn">
+            <span>Probar demo interactiva</span>
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M4 9h10M9 4l5 5-5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <a href="#contacto" class="btn btn--outline btn--lg">Pre-registrar mi parroquia</a>
+        </div>
+
+        <div class="hero__trust">
+          <div class="hero__trust-item"><strong>45</strong><span>parroquias</span></div>
+          <div class="hero__trust-sep" aria-hidden="true"></div>
+          <div class="hero__trust-item"><strong>+3,000</strong><span>misiones reales</span></div>
+          <div class="hero__trust-sep" aria-hidden="true"></div>
+          <div class="hero__trust-item"><strong>+1,500</strong><span>rosas cultivadas</span></div>
+        </div>
+      </div>
+
+      <!-- MOCKUP 3D INTERACTIVO -->
+      <div class="hero__stage reveal reveal--delay">
+        <div class="tilt" id="tiltStage">
+          <div class="tilt__glow" aria-hidden="true"></div>
+
+          <div class="phone" id="phone">
+            <div class="phone__notch"></div>
+            <div class="phone__screen" id="phoneScreen">
+
+              <!-- Vista Estudiante -->
+              <div class="screen screen--student is-active" data-screen="student">
+                <div class="screen__topbar">
+                  <span class="screen__avatar">🦊</span>
+                  <div>
+                    <p class="screen__hello">Hola, Sofía</p>
+                    <p class="screen__sub">Día 14 de tu camino</p>
+                  </div>
+                </div>
+                <div class="path-track">
+                  <div class="path-track__fill" style="width:62%"></div>
+                  <span class="path-track__paw" style="left:62%">🐾</span>
+                </div>
+                <p class="screen__caption">6 de 10 huellitas hacia tu meta</p>
+                <div class="mission-card">
+                  <span class="mission-card__icon">✝️</span>
+                  <div>
+                    <p class="mission-card__title">Misión de hoy</p>
+                    <p class="mission-card__desc">Aprende el Padre Nuestro, verso a verso</p>
+                  </div>
+                  <span class="mission-card__go">Ir →</span>
+                </div>
+                <div class="mission-card mission-card--muted">
+                  <span class="mission-card__icon">🌹</span>
+                  <div>
+                    <p class="mission-card__title">Riega tu rosal</p>
+                    <p class="mission-card__desc">Una oración = una gota de luz</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Vista Mi Jardín de Rosas -->
+              <div class="screen screen--garden" data-screen="garden">
+                <div class="screen__topbar">
+                  <span class="screen__avatar">🌹</span>
+                  <div>
+                    <p class="screen__hello">Mi Jardín de Rosas</p>
+                    <p class="screen__sub">7 rosas floreciendo</p>
+                  </div>
+                </div>
+                <div class="garden-grid">
+                  <span class="rose rose--full">🌹</span>
+                  <span class="rose rose--full">🌹</span>
+                  <span class="rose rose--full">🌹</span>
+                  <span class="rose rose--bud">🌱</span>
+                  <span class="rose rose--full">🌹</span>
+                  <span class="rose rose--bud">🌱</span>
+                  <span class="rose rose--full">🌹</span>
+                  <span class="rose rose--empty">🕳️</span>
+                  <span class="rose rose--full">🌹</span>
+                </div>
+                <p class="screen__caption">Cada rosa nace de una promesa cumplida</p>
+                <button class="screen__btn">Regar con una oración</button>
+              </div>
+
+              <!-- Vista Examen de Conciencia -->
+              <div class="screen screen--exam" data-screen="exam">
+                <div class="screen__topbar">
+                  <span class="screen__avatar">🕯️</span>
+                  <div>
+                    <p class="screen__hello">Examen de Conciencia</p>
+                    <p class="screen__sub">Antes de dormir</p>
+                  </div>
+                </div>
+                <ul class="exam-list">
+                  <li><span>¿Ayudé a alguien hoy?</span><span class="exam-check">✓</span></li>
+                  <li><span>¿Dije siempre la verdad?</span><span class="exam-check">✓</span></li>
+                  <li><span>¿Recé por mi familia?</span><span class="exam-check exam-check--pending">○</span></li>
+                </ul>
+                <p class="screen__caption">Ziro te acompaña, no te juzga</p>
+                <button class="screen__btn screen__btn--outline">Cerrar el día con una oración</button>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Selector de pantallas dentro del mockup -->
+          <div class="phone-switch" role="tablist" aria-label="Cambiar pantalla del mockup">
+            <button class="phone-switch__btn is-active" data-target="student" role="tab" aria-selected="true">Vista Estudiante</button>
+            <button class="phone-switch__btn" data-target="garden" role="tab" aria-selected="false">Mi Jardín de Rosas</button>
+            <button class="phone-switch__btn" data-target="exam" role="tab" aria-selected="false">Examen de Conciencia</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="hero__scroll" aria-hidden="true"><span></span>Desliza para conocer a Ziro</div>
+  </section>
+
+  <!-- ============ CONOCE A ZIRO ============ -->
+  <section class="ziro" id="conoce">
+    <div class="ziro__inner">
+
+      <div class="ziro__figure reveal">
+        <!--
+          INTEGRACIÓN 3D — nota para el equipo de desarrollo:
+          Este contenedor está preparado para reemplazar el zorro en CSS/SVG
+          por un visor 3D real. Dos rutas recomendadas:
+            1) Spline.design → exportar como <iframe> o el web-component
+               <spline-viewer> y montarlo aquí dentro de #ziroStage
+               manteniendo el mismo tamaño (max 420px) y fondo transparente.
+            2) Render estilo Pixar (Blender/Cinema4D) → exportar secuencia
+               de PNG con canal alfa o un .glb y cargarlo con <model-viewer>
+               de Google (https://modelviewer.dev), apuntando a #ziroStage.
+          Mientras tanto, se usa un fox CSS animado + globos de diálogo.
+        -->
+        <div class="ziro-stage" id="ziroStage">
+          <div class="ziro-halo" aria-hidden="true"></div>
+
+          <button class="ziro-bubble" id="ziroBubble" aria-live="polite">
+            <span id="ziroBubbleText">¡Hola! Soy Ziro. Toca mi nariz 🐽</span>
+          </button>
+
+          <div class="fox" id="foxClickable" role="button" tabindex="0" aria-label="Habla con Ziro">
+            <div class="fox__ears">
+              <span class="fox__ear fox__ear--l"></span>
+              <span class="fox__ear fox__ear--r"></span>
+            </div>
+            <div class="fox__head">
+              <span class="fox__cheek fox__cheek--l"></span>
+              <span class="fox__cheek fox__cheek--r"></span>
+              <span class="fox__eye fox__eye--l"></span>
+              <span class="fox__eye fox__eye--r"></span>
+              <span class="fox__nose"></span>
+            </div>
+            <div class="fox__tail"></div>
+            <div class="fox__shadow"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ziro__copy reveal reveal--delay">
+        <p class="eyebrow eyebrow--light"><span class="eyebrow__dot"></span>Conoce a Ziro</p>
+        <h2 class="section-title">Un copiloto, <em>no un examinador</em></h2>
+        <p class="ziro__lede">
+          Ziro no evalúa: acompaña. Es la voz cálida que recibe a cada niño al abrir la app,
+          celebra sus huellitas y le recuerda que el camino a la Primera Comunión se
+          camina con calma, curiosidad y alegría — nunca con miedo.
+        </p>
+
+        <div class="ziro-traits">
+          <div class="ziro-trait">
+            <span class="ziro-trait__icon">🦊</span>
+            <div>
+              <p class="ziro-trait__title">Guía constante</p>
+              <p class="ziro-trait__desc">Aparece en cada pantalla clave para orientar, nunca para presionar.</p>
+            </div>
+          </div>
+          <div class="ziro-trait">
+            <span class="ziro-trait__icon">💬</span>
+            <div>
+              <p class="ziro-trait__title">Habla como un niño le entiende</p>
+              <p class="ziro-trait__desc">Explica los sacramentos con metáforas simples: semillas, rosas, luz.</p>
+            </div>
+          </div>
+          <div class="ziro-trait">
+            <span class="ziro-trait__icon">🎉</span>
+            <div>
+              <p class="ziro-trait__title">Celebra lo pequeño</p>
+              <p class="ziro-trait__desc">Una oración a tiempo también es una victoria — y Ziro lo nota.</p>
+            </div>
+          </div>
+        </div>
+
+        <p class="ziro__hint">Toca a Ziro y descubre lo que tiene para decirte hoy →</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ MINI DEMO INTERACTIVO ============ -->
+  <section class="demo" id="demo">
+    <div class="demo__inner">
+      <div class="demo__head reveal">
+        <p class="eyebrow eyebrow--light"><span class="eyebrow__dot"></span>Pruébalo tú mismo</p>
+        <h2 class="section-title">El Árbol Doble</h2>
+        <p class="section-lede">
+          Una de las mecánicas favoritas dentro de la app. Cada acto que cae del cielo
+          pertenece a una de las dos ramas de tu árbol interior. Atrápalo en la rama correcta
+          y observa cómo florece.
+        </p>
+      </div>
+
+      <div class="game reveal reveal--delay" id="game">
+        <div class="game__stage" id="gameStage">
+          <div class="game__sky" id="gameSky"></div>
+
+          <div class="game__tree game__tree--light" data-side="luz">
+            <span class="game__tree-label">Rama de Luz</span>
+            <div class="game__basket" id="basketLuz">🌿</div>
+          </div>
+
+          <div class="game__tree game__tree--shadow" data-side="sombra">
+            <span class="game__tree-label">Rama de Sombra</span>
+            <div class="game__basket" id="basketSombra">🍂</div>
+          </div>
+        </div>
+
+        <div class="game__panel">
+          <div class="game__scoreboard">
+            <div class="game__score">
+              <span class="game__score-num" id="scoreVal">0</span>
+              <span class="game__score-label">Puntos</span>
+            </div>
+            <div class="game__score">
+              <span class="game__score-num" id="livesVal">3</span>
+              <span class="game__score-label">Vidas</span>
+            </div>
+            <div class="game__score">
+              <span class="game__score-num" id="streakVal">0</span>
+              <span class="game__score-label">Racha</span>
+            </div>
+          </div>
+
+          <p class="game__hint" id="gameHint">Pulsa «Comenzar» y atrapa cada acto en su rama: perdonar, compartir y orar van a la <strong>Luz</strong>; mentir, pelear y ignorar van a la <strong>Sombra</strong>.</p>
+
+          <div class="game__controls">
+            <button class="btn btn--gold btn--md" id="gameStart">Comenzar juego</button>
+            <button class="btn btn--outline btn--md" id="gameReset" hidden>Jugar de nuevo</button>
+          </div>
+
+          <label class="game__sound">
+            <input type="checkbox" id="soundToggle" checked>
+            <span>Sonido</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SELECTOR DE PERFILES ============ -->
+  <section class="profiles" id="perfiles">
+    <div class="profiles__inner">
+      <div class="profiles__head reveal">
+        <p class="eyebrow"><span class="eyebrow__dot"></span>Una app, dos experiencias</p>
+        <h2 class="section-title">Hecha para quien guía y para quien acompaña en casa</h2>
+      </div>
+
+      <div class="switcher reveal reveal--delay">
+        <div class="switcher__toggle" role="tablist" aria-label="Elegir perfil">
+          <button class="switcher__btn is-active" data-profile="catequista" role="tab" aria-selected="true">Catequista</button>
+          <button class="switcher__btn" data-profile="familia" role="tab" aria-selected="false">Familia</button>
+          <span class="switcher__pill" aria-hidden="true"></span>
+        </div>
+
+        <div class="switcher__panel" id="switcherPanel">
+
+          <div class="profile-view is-active" data-view="catequista">
+            <div class="profile-view__grid">
+              <div class="profile-card">
+                <span class="profile-card__icon">👥</span>
+                <p class="profile-card__num">28</p>
+                <p class="profile-card__label">niños en tu grupo</p>
+              </div>
+              <div class="profile-card">
+                <span class="profile-card__icon">📈</span>
+                <p class="profile-card__num">86%</p>
+                <p class="profile-card__label">misiones completadas esta semana</p>
+              </div>
+              <div class="profile-card">
+                <span class="profile-card__icon">🔥</span>
+                <p class="profile-card__num">12</p>
+                <p class="profile-card__label">niños con racha de oración activa</p>
+              </div>
+            </div>
+            <ul class="profile-list">
+              <li><span class="profile-list__dot"></span>Panel en vivo con el avance real de cada niño, sin planillas de papel.</li>
+              <li><span class="profile-list__dot"></span>Misiones reales asignables por sesión: desde memorizar un versículo hasta un acto de servicio en casa.</li>
+              <li><span class="profile-list__dot"></span>Alertas suaves cuando un niño necesita más acompañamiento, nunca una lista pública de "atrasados".</li>
+            </ul>
+          </div>
+
+          <div class="profile-view" data-view="familia">
+            <div class="profile-view__grid">
+              <div class="profile-card">
+                <span class="profile-card__icon">🕯️</span>
+                <p class="profile-card__num">9 días</p>
+                <p class="profile-card__label">de racha de oración en familia</p>
+              </div>
+              <div class="profile-card">
+                <span class="profile-card__icon">📔</span>
+                <p class="profile-card__num">14</p>
+                <p class="profile-card__label">entradas en el diario guiado</p>
+              </div>
+              <div class="profile-card">
+                <span class="profile-card__icon">🌹</span>
+                <p class="profile-card__num">7</p>
+                <p class="profile-card__label">rosas cultivadas juntos</p>
+              </div>
+            </div>
+            <ul class="profile-list">
+              <li><span class="profile-list__dot"></span>Diario guiado con una pregunta al día para conversar en la mesa, sin necesitar formación catequética previa.</li>
+              <li><span class="profile-list__dot"></span>Racha de oración familiar que se cuida junta, no compite entre hermanos.</li>
+              <li><span class="profile-list__dot"></span>Notificaciones amables que recuerdan el momento de fe del día, sin sonar a tarea pendiente.</li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ NOVEDADES / CHANGELOG ============ -->
+  <section class="updates" id="novedades">
+    <div class="updates__inner">
+      <div class="updates__head reveal">
+        <p class="eyebrow eyebrow--light"><span class="eyebrow__dot"></span>Ritmo de desarrollo</p>
+        <h2 class="section-title">Ziro no deja de caminar</h2>
+        <p class="section-lede">Cada versión añade una huellita más al camino. Así ha crecido la app hasta hoy.</p>
+      </div>
+
+      <ol class="timeline reveal reveal--delay">
+        <li class="timeline__item">
+          <span class="timeline__paw" aria-hidden="true">🐾</span>
+          <div class="timeline__card">
+            <div class="timeline__meta">
+              <span class="timeline__version">v1.3</span>
+              <span class="timeline__tag">Actual</span>
+            </div>
+            <h3 class="timeline__title">Minijuegos interactivos</h3>
+            <p class="timeline__desc">Llegan «Reglas del Bosque» y «El Árbol Doble»: mecánicas jugables que convierten los valores en decisiones divertidas de tomar.</p>
+          </div>
+        </li>
+        <li class="timeline__item">
+          <span class="timeline__paw" aria-hidden="true">🐾</span>
+          <div class="timeline__card">
+            <div class="timeline__meta">
+              <span class="timeline__version">v1.2</span>
+            </div>
+            <h3 class="timeline__title">Navegación PWA en 3 secciones</h3>
+            <p class="timeline__desc">Reestructuramos la app en tres pilares claros y sumamos persistencia offline: el progreso de cada niño se guarda aunque se caiga el internet.</p>
+          </div>
+        </li>
+        <li class="timeline__item">
+          <span class="timeline__paw" aria-hidden="true">🐾</span>
+          <div class="timeline__card">
+            <div class="timeline__meta">
+              <span class="timeline__version">v1.0</span>
+            </div>
+            <h3 class="timeline__title">Nace la arquitectura PWA</h3>
+            <p class="timeline__desc">Primer lanzamiento: identidad visual de Ziro, arquitectura de app instalable y las primeras huellitas del camino.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ VIDEO + SOCIAL PROOF ============ -->
+  <section class="proof" id="video">
+    <div class="proof__inner">
+
+      <div class="proof__video reveal">
+        <div class="video-frame">
+          <div class="video-frame__inner">
+            <iframe
+              src="https://www.youtube.com/embed/dQw4w9WgXcQ"
+              title="Video oficial de Ziro"
+              loading="lazy"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </div>
+        </div>
+      </div>
+
+      <div class="proof__stats reveal reveal--delay">
+        <p class="eyebrow"><span class="eyebrow__dot"></span>Un camino que ya se está andando</p>
+        <h2 class="section-title">No es una promesa, es un recorrido</h2>
+
+        <div class="stat-grid">
+          <div class="stat">
+            <p class="stat__num" data-count="1500" data-suffix="+">0</p>
+            <p class="stat__label">Rosas cultivadas</p>
+          </div>
+          <div class="stat">
+            <p class="stat__num" data-count="3000" data-suffix="+">0</p>
+            <p class="stat__label">Misiones reales completadas</p>
+          </div>
+          <div class="stat">
+            <p class="stat__num" data-count="45" data-suffix="">0</p>
+            <p class="stat__label">Parroquias acompañadas</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ============ CONTACTO / PRE-REGISTRO ============ -->
+  <section class="contact" id="contacto">
+    <div class="contact__inner">
+      <div class="contact__copy reveal">
+        <p class="eyebrow eyebrow--light"><span class="eyebrow__dot"></span>Da el primer paso</p>
+        <h2 class="section-title">Pre-registra tu parroquia o escríbenos</h2>
+        <p class="section-lede">
+          Cuéntanos quién eres y qué necesitas. Un miembro del equipo de Ziro
+          te responderá personalmente — sin formularios automáticos ni respuestas genéricas.
+        </p>
+
+        <div class="contact-detail">
+          <span>📍</span>
+          <div><strong>I.E. General Alfredo Vásquez Cobo</strong><br>Cali, Colombia</div>
+        </div>
+        <div class="contact-detail">
+          <span>✉️</span>
+          <div><a href="mailto:ziromiprimeracomunion@gmail.com">ziromiprimeracomunion@gmail.com</a></div>
+        </div>
+        <div class="contact-detail">
+          <span>📞</span>
+          <div><a href="tel:+573019698792">+57 301 969 8792</a></div>
+        </div>
+      </div>
+
+      <div class="contact__form-wrap reveal reveal--delay">
+        <form class="form" id="contactForm" novalidate>
+
+          <div class="form__success" id="formSuccess" hidden>
+            <svg class="form__check" viewBox="0 0 52 52"><circle cx="26" cy="26" r="24" fill="none"/><path fill="none" d="M14 27l7 7 17-17"/></svg>
+            <h3>¡Gracias por escribirnos!</h3>
+            <p>Ziro guardó tu mensaje bajo su patita. Te responderemos muy pronto.</p>
+          </div>
+
+          <div id="formFields">
+            <div class="field">
+              <label for="fName">Nombre completo</label>
+              <input type="text" id="fName" name="name" autocomplete="name" placeholder="Ej. María Fernández">
+              <span class="field__error" id="errName"></span>
+            </div>
+
+            <div class="field">
+              <label for="fEmail">Correo electrónico</label>
+              <input type="email" id="fEmail" name="email" autocomplete="email" placeholder="tucorreo@ejemplo.com">
+              <span class="field__error" id="errEmail"></span>
+            </div>
+
+            <div class="field">
+              <label for="fRole">Tu rol</label>
+              <select id="fRole" name="role">
+                <option value="" disabled selected>Selecciona una opción</option>
+                <option value="parroco">Párroco</option>
+                <option value="catequista">Catequista</option>
+                <option value="padre">Padre / Madre de familia</option>
+                <option value="otro">Otro</option>
+              </select>
+              <span class="field__error" id="errRole"></span>
+            </div>
+
+            <div class="field">
+              <label for="fMessage">Mensaje</label>
+              <textarea id="fMessage" name="message" rows="4" placeholder="Cuéntanos sobre tu parroquia o grupo de catequesis..."></textarea>
+              <span class="field__error" id="errMessage"></span>
+            </div>
+
+            <button type="submit" class="btn btn--gold btn--lg form__submit" id="formSubmit">
+              <span class="form__submit-text">Enviar mensaje</span>
+              <span class="form__spinner" aria-hidden="true"></span>
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="footer__inner">
+    <div class="footer__brand">
+      <span class="nav__paw nav__paw--footer" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none"><path d="M24 27c-6.5 0-12.5 5.6-12.5 11.2 0 3.1 2.5 4.6 5.6 3.6 2.4-.8 4.5-1.4 6.9-1.4s4.5.6 6.9 1.4c3.1 1 5.6-.5 5.6-3.6C36.5 32.6 30.5 27 24 27Z" fill="currentColor"/><ellipse cx="10.5" cy="20" rx="4.6" ry="6" fill="currentColor"/><ellipse cx="37.5" cy="20" rx="4.6" ry="6" fill="currentColor"/><ellipse cx="18" cy="11" rx="4" ry="5.4" fill="currentColor"/><ellipse cx="30" cy="11" rx="4" ry="5.4" fill="currentColor"/></svg>
+      </span>
+      <p class="footer__tagline">Ziro: semilla de luz en el camino de la fe.</p>
+    </div>
+
+    <div class="footer__cols">
+      <div class="footer__col">
+        <h4>Explora</h4>
+        <a href="#conoce">Conoce a Ziro</a>
+        <a href="#demo">Demo en vivo</a>
+        <a href="#perfiles">Para tu parroquia</a>
+        <a href="#novedades">Novedades</a>
+      </div>
+      <div class="footer__col">
+        <h4>Contacto</h4>
+        <a href="mailto:ziromiprimeracomunion@gmail.com">ziromiprimeracomunion@gmail.com</a>
+        <a href="tel:+573019698792">+57 301 969 8792</a>
+        <span>Cali, Colombia</span>
+      </div>
+    </div>
+
+    <div class="footer__social">
+      <h4>Síguenos</h4>
+      <div class="footer__icons">
+        <a href="https://www.instagram.com/tuguiaziro" target="_blank" rel="noopener" aria-label="Instagram" class="social">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/></svg>
+        </a>
+        <a href="https://youtube.com" target="_blank" rel="noopener" aria-label="YouTube" class="social">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2.5" y="5.5" width="19" height="13" rx="4" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 9.3v5.4l4.7-2.7-4.7-2.7Z" fill="currentColor"/></svg>
+        </a>
+        <a href="https://wa.me/573019698792" target="_blank" rel="noopener" aria-label="WhatsApp" class="social">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.7-1.2A9 9 0 1 0 12 3Z" stroke="currentColor" stroke-width="1.6"/><path d="M8.5 8.7c.2-.5.4-.5.7-.5h.6c.2 0 .4 0 .6.5s.7 1.7.7 1.8.1.3 0 .5-.2.3-.4.5-.4.4-.2.8c.2.4.9 1.5 2 2.4 1.3 1.1 2 1.1 2.3.9.3-.2.5-.4.7-.7s.4-.4.7-.3l1.6.8c.2.1.4.2.4.5s-.1 1-.6 1.5-1.6.9-2.9.5c-1.6-.5-3.5-1.8-4.9-3.4-1.2-1.4-1.9-2.7-2.1-3.4-.2-.7.1-1.1.3-1.3Z" fill="currentColor"/></svg>
+        </a>
+        <a href="https://www.facebook.com/share/1Dz38hnFzw/" target="_blank" rel="noopener" aria-label="Facebook" class="social">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9.2" stroke="currentColor" stroke-width="1.6"/><path d="M13.6 21v-6.3h2.1l.3-2.5h-2.4V10.6c0-.7.2-1.2 1.2-1.2h1.3V7.1c-.2 0-1-.1-1.9-.1-1.9 0-3.2 1.1-3.2 3.3v1.9H8.8v2.5H11V21" fill="currentColor"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer__bottom">
+    <p>© 2026 Ziro y mi Comunión. Todos los derechos reservados.</p>
+    <p class="footer__made">Diseñado con 🐾 para acompañar caminos de fe.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
