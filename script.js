@@ -231,6 +231,7 @@
     const soundToggle = document.getElementById('soundToggle');
     const basketLuz = document.getElementById('basketLuz');
     const basketSombra = document.getElementById('basketSombra');
+    const levelBadge = document.getElementById('gameLevel');
 
     if (!stage || !sky) return;
 
@@ -247,12 +248,24 @@
       { icon: '😠', label: 'Enojarse' }
     ];
 
+    // Niveles progresivos: a más puntaje, cae más rápido, más seguido
+    // y aparecen más tentaciones (sombra) que actos de luz.
+    const LEVELS = [
+      { minScore: 0,   fallSpeed: 2.2, spawnDelay: 1250, shadowRatio: 0.42, label: 'Nivel 1 · Primeros pasos' },
+      { minScore: 60,  fallSpeed: 2.8, spawnDelay: 1000, shadowRatio: 0.46, label: 'Nivel 2 · Tomando ritmo' },
+      { minScore: 140, fallSpeed: 3.4, spawnDelay: 830,  shadowRatio: 0.50, label: 'Nivel 3 · Atención plena' },
+      { minScore: 240, fallSpeed: 4.0, spawnDelay: 690,  shadowRatio: 0.53, label: 'Nivel 4 · Camino exigente' },
+      { minScore: 360, fallSpeed: 4.6, spawnDelay: 570,  shadowRatio: 0.56, label: 'Nivel 5 · Corazón firme' }
+    ];
+
     let score = 0;
     let lives = 3;
     let streak = 0;
     let running = false;
     let spawnTimer = null;
-    let fallSpeed = 2.4; // px per frame baseline
+    let levelIndex = 0;
+
+    function getLevel() { return LEVELS[levelIndex]; }
 
     // ---- Sonido simulado con Web Audio API (sin archivos externos) ----
     let audioCtx = null;
@@ -280,7 +293,8 @@
     const sfx = {
       correct: () => { playTone(660, 0.18, 'triangle'); playTone(880, 0.22, 'triangle'); },
       wrong:   () => { playTone(180, 0.28, 'sawtooth'); },
-      over:    () => { playTone(140, 0.5, 'square'); }
+      over:    () => { playTone(140, 0.5, 'square'); },
+      levelUp: () => { playTone(520, 0.12, 'sine'); playTone(660, 0.12, 'sine'); playTone(880, 0.22, 'sine'); }
     };
 
     function updateHUD() {
@@ -289,8 +303,29 @@
       streakVal.textContent = streak;
     }
 
+    // Revisa si el puntaje actual alcanza el siguiente nivel y, si es así,
+    // sube la dificultad y avisa al jugador con un pulso visual + sonoro.
+    function checkLevelUp() {
+      let newIndex = levelIndex;
+      for (let i = LEVELS.length - 1; i >= 0; i--) {
+        if (score >= LEVELS[i].minScore) { newIndex = i; break; }
+      }
+      if (newIndex !== levelIndex) {
+        levelIndex = newIndex;
+        if (levelBadge) {
+          levelBadge.textContent = `Nivel ${levelIndex + 1}`;
+          levelBadge.classList.remove('is-levelup');
+          void levelBadge.offsetWidth; // reinicia la animación
+          levelBadge.classList.add('is-levelup');
+        }
+        sfx.levelUp();
+        hint.innerHTML = `⬆️ <strong>${getLevel().label}</strong> — cae más rápido y aparecen más tentaciones. ¡Mantén la calma!`;
+      }
+    }
+
     function spawnItem() {
-      const isLight = Math.random() > 0.48;
+      const lvl = getLevel();
+      const isLight = Math.random() > lvl.shadowRatio;
       const pool = isLight ? LIGHT_ITEMS : SHADOW_ITEMS;
       const item = pool[Math.floor(Math.random() * pool.length)];
 
@@ -309,7 +344,7 @@
       sky.appendChild(el);
 
       let posY = -40;
-      const speed = fallSpeed + Math.random() * 1.2;
+      const speed = lvl.fallSpeed + Math.random() * 1.1;
       const kind = el.dataset.correctSide; // 'luz' (bueno) | 'sombra' (malo)
       let settled = false; // evita doble disparo entre click y touchstart
 
@@ -348,6 +383,7 @@
         hint.innerHTML = 'Se te escapó un acto de luz, pero puedes seguir intentándolo.';
       }
       updateHUD();
+      checkLevelUp();
     }
 
     function flashBasket(basketEl, danger = false) {
@@ -370,33 +406,36 @@
         hint.innerHTML = streak >= 3
           ? `¡Racha de ${streak}! Tu árbol de luz está floreciendo 🌿`
           : '¡Bien hecho! Ese acto de luz llegó a tu árbol.';
+        updateHUD();
+        checkLevelUp();
       } else {
         lives -= 1;
         streak = 0;
         flashBasket(basketSombra, true);
         sfx.wrong();
         hint.innerHTML = 'Esa era una sombra — te costó una vida por tocarla.';
-        if (lives <= 0) { updateHUD(); endGame(false); return; }
+        updateHUD();
+        if (lives <= 0) { endGame(false); return; }
       }
-      updateHUD();
     }
 
     function startGame() {
-      score = 0; lives = 3; streak = 0; fallSpeed = 2.4;
+      score = 0; lives = 3; streak = 0; levelIndex = 0;
       updateHUD();
       sky.innerHTML = '';
       running = true;
       startBtn.hidden = true;
       resetBtn.hidden = true;
-      hint.innerHTML = 'Toca los actos de <strong>Luz</strong> para sumar puntos. Puedes dejar caer los de <strong>Sombra</strong> sin miedo — solo pierdes una vida si los tocas.';
+      if (levelBadge) {
+        levelBadge.textContent = 'Nivel 1';
+        levelBadge.classList.remove('is-levelup');
+      }
+      hint.innerHTML = 'Toca los actos de <strong>Luz</strong> para sumar puntos. Puedes dejar caer los de <strong>Sombra</strong> sin miedo — solo pierdes una vida si los tocas. La dificultad sube por niveles a medida que avanzas.';
 
-      let spawnDelay = 1150;
       function loop() {
         if (!running) return;
         spawnItem();
-        fallSpeed = Math.min(fallSpeed + 0.025, 5);
-        spawnDelay = Math.max(spawnDelay - 7, 680);
-        spawnTimer = setTimeout(loop, spawnDelay);
+        spawnTimer = setTimeout(loop, getLevel().spawnDelay);
       }
       loop();
     }
@@ -409,7 +448,7 @@
         el.remove();
       });
       sfx.over();
-      hint.innerHTML = `Juego terminado — anotaste <strong>${score} puntos</strong>. ${score >= 80 ? 'Tu árbol de luz creció fuerte 🌳' : '¡Sigue practicando, cada intento cuenta!'}`;
+      hint.innerHTML = `Juego terminado en <strong>${getLevel().label}</strong> — anotaste <strong>${score} puntos</strong>. ${score >= 140 ? 'Tu árbol de luz creció fuerte 🌳' : '¡Sigue practicando, cada intento cuenta!'}`;
       resetBtn.hidden = false;
     }
 

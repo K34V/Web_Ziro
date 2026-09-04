@@ -41,7 +41,11 @@
 }
 
 *,*::before,*::after{ box-sizing:border-box; }
-html{ scroll-behavior:smooth; }
+html{
+  scroll-behavior:smooth;
+  overflow-x: hidden; /* red de seguridad anti-overflow horizontal */
+  width: 100%;
+}
 body{
   margin:0;
   background: var(--cream);
@@ -51,6 +55,8 @@ body{
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
 }
 img,svg{ display:block; max-width:100%; }
 a{ color: inherit; text-decoration:none; }
@@ -409,7 +415,11 @@ main, .footer{ position:relative; z-index:2; }
 }
 .ziro__figure{ display:flex; justify-content:center; }
 .ziro-stage{
-  position:relative; width: 300px; height: 340px; display:flex; align-items:flex-end; justify-content:center;
+  position:relative;
+  width: clamp(200px, 62vw, 300px);
+  height: clamp(230px, 71vw, 340px);
+  display:flex; align-items:flex-end; justify-content:center;
+  margin: 0 auto; /* nunca depende del contexto del grid para centrarse */
 }
 /* Visor 3D real: invisible hasta que el .glb carga con éxito (ver script.js).
    Mientras tanto, el fox ilustrado en CSS permanece visible como respaldo. */
@@ -550,6 +560,20 @@ main, .footer{ position:relative; z-index:2; }
   touch-action: none; /* evita scroll/zoom accidental del navegador al jugar en móvil */
 }
 .game__sky{ position:absolute; inset:0; overflow:hidden; }
+.game__level{
+  position:absolute; top:14px; left:14px; z-index:4;
+  background: var(--navy); color: var(--cream);
+  font-family: var(--font-mono); font-size:.7rem; font-weight:600;
+  letter-spacing:.03em; padding:.4rem .8rem; border-radius:99px;
+  box-shadow: var(--shadow-soft);
+  transition: transform .3s var(--ease-out), background .3s ease, color .3s ease;
+}
+.game__level.is-levelup{ animation: levelPulse .7s var(--ease-out); }
+@keyframes levelPulse{
+  0%{ transform: scale(1); }
+  35%{ transform: scale(1.22); background: var(--gold); color: var(--navy-deep); box-shadow: 0 0 0 10px var(--gold-soft); }
+  100%{ transform: scale(1); }
+}
 .falling-item{
   position:absolute; top:-40px; font-size:1.8rem; line-height:1; user-select:none;
   filter: drop-shadow(0 6px 8px rgba(0,0,0,.15));
