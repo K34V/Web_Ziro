@@ -11,6 +11,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,500;1,9..144,600&family=Manrope:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="styles.css">
+
+<!-- Visor de modelos 3D (Google model-viewer) — usado en la sección "Conoce a Ziro".
+     Carga como módulo, no bloquea el render de la página. -->
+<script type="module" src="https://unpkg.com/@google/model-viewer@3.5.0/dist/model-viewer.min.js"></script>
 </head>
 <body>
 
@@ -195,19 +199,39 @@
 
       <div class="ziro__figure reveal">
         <!--
-          INTEGRACIÓN 3D — nota para el equipo de desarrollo:
-          Este contenedor está preparado para reemplazar el zorro en CSS/SVG
-          por un visor 3D real. Dos rutas recomendadas:
-            1) Spline.design → exportar como <iframe> o el web-component
-               <spline-viewer> y montarlo aquí dentro de #ziroStage
-               manteniendo el mismo tamaño (max 420px) y fondo transparente.
-            2) Render estilo Pixar (Blender/Cinema4D) → exportar secuencia
-               de PNG con canal alfa o un .glb y cargarlo con <model-viewer>
-               de Google (https://modelviewer.dev), apuntando a #ziroStage.
-          Mientras tanto, se usa un fox CSS animado + globos de diálogo.
+          INTEGRACIÓN 3D — YA CONECTADA.
+          <model-viewer> intenta cargar el modelo real de Ziro desde
+          "assets/models/ziro-fox.glb". Para usar tu propio modelo:
+            1) Exporta desde Spline.design como .glb, o desde Blender/Cinema4D
+               (render estilo Pixar) como .glb/.gltf optimizado (<5MB ideal).
+            2) Reemplaza el archivo en esa misma ruta (o cambia el atributo
+               src de #ziroModelViewer más abajo).
+          Si el modelo no existe o falla al cargar, la página cae de forma
+          automática y silenciosa al zorro ilustrado en CSS/SVG de respaldo
+          (ver JS: eventos "load" / "error" de #ziroModelViewer).
         -->
         <div class="ziro-stage" id="ziroStage">
           <div class="ziro-halo" aria-hidden="true"></div>
+
+          <model-viewer
+            id="ziroModelViewer"
+            class="ziro-model"
+            src="assets/models/ziro-fox.glb"
+            alt="Modelo 3D de Ziro, el zorro guía de la catequesis"
+            camera-controls
+            auto-rotate
+            auto-rotate-delay="2500"
+            interaction-prompt="none"
+            shadow-intensity="1"
+            exposure="1.05"
+            loading="lazy"
+            reveal="auto"
+            disable-zoom
+            ar
+            ar-modes="webxr scene-viewer quick-look"
+            tabindex="0"
+            aria-label="Habla con Ziro">
+          </model-viewer>
 
           <button class="ziro-bubble" id="ziroBubble" aria-live="polite">
             <span id="ziroBubbleText">¡Hola! Soy Ziro. Toca mi nariz 🐽</span>
@@ -314,7 +338,7 @@
             </div>
           </div>
 
-          <p class="game__hint" id="gameHint">Pulsa «Comenzar» y atrapa cada acto en su rama: perdonar, compartir y orar van a la <strong>Luz</strong>; mentir, pelear y ignorar van a la <strong>Sombra</strong>.</p>
+          <p class="game__hint" id="gameHint">Pulsa «Comenzar». Toca los actos de <strong>Luz</strong> (perdonar, compartir, orar, ayudar) para sumar puntos. Los actos de <strong>Sombra</strong> puedes dejarlos caer sin miedo — solo pierdes una vida si los tocas.</p>
 
           <div class="game__controls">
             <button class="btn btn--gold btn--md" id="gameStart">Comenzar juego</button>

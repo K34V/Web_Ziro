@@ -131,6 +131,30 @@
     });
   }
 
+  // ---- Modelo 3D real (model-viewer) con caída elegante al fox de respaldo ----
+  const ziroStage = document.getElementById('ziroStage');
+  const modelViewer = document.getElementById('ziroModelViewer');
+
+  if (modelViewer && ziroStage) {
+    modelViewer.addEventListener('load', () => {
+      // El .glb cargó correctamente: se muestra el modelo 3D y se oculta el fox CSS.
+      ziroStage.classList.add('has-model');
+      modelViewer.classList.add('is-active');
+    });
+    modelViewer.addEventListener('error', () => {
+      // No hay modelo (o falló la carga): seguimos mostrando el fox CSS de respaldo.
+      ziroStage.classList.remove('has-model');
+      modelViewer.classList.remove('is-active');
+    });
+    modelViewer.addEventListener('click', cycleZiroPhrase);
+    modelViewer.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        cycleZiroPhrase();
+      }
+    });
+  }
+
   /* ---------------------------------------------------------
      6) SELECTOR DE PERFILES — Catequista / Familia
   --------------------------------------------------------- */
@@ -286,6 +310,8 @@
 
       let posY = -40;
       const speed = fallSpeed + Math.random() * 1.2;
+      const kind = el.dataset.correctSide; // 'luz' (bueno) | 'sombra' (malo)
+      let settled = false; // evita doble disparo entre click y touchstart
 
       function frame() {
         if (!running || !el.isConnected) return;
@@ -293,59 +319,63 @@
         el.style.top = posY + 'px';
 
         if (posY > sky.clientHeight) {
-          el.remove();
-          missItem();
+          if (el.isConnected) el.remove();
+          missItem(kind);
           return;
         }
         el.__raf = requestAnimationFrame(frame);
       }
       el.__raf = requestAnimationFrame(frame);
 
-      el.addEventListener('click', () => catchItem(el));
+      function handleCatch(e) {
+        if (settled) return;
+        settled = true;
+        e.preventDefault();
+        catchItem(el, kind);
+      }
+      // click cubre mouse/teclado; touchstart evita el retraso táctil y el "click fantasma"
+      el.addEventListener('click', handleCatch);
+      el.addEventListener('touchstart', handleCatch, { passive: false });
     }
 
-    function missItem() {
-      lives -= 1;
-      streak = 0;
+    // Un acto de Luz que cae sin tocarse es solo una oportunidad perdida: no cuesta vidas.
+    // Un acto de Sombra que cae sin tocarse fue evitado a tiempo: se recompensa levemente.
+    function missItem(kind) {
+      if (kind === 'sombra') {
+        score += 5;
+        hint.innerHTML = 'Bien hecho: dejaste pasar esa sombra sin tocarla 🌤️';
+      } else {
+        hint.innerHTML = 'Se te escapó un acto de luz, pero puedes seguir intentándolo.';
+      }
       updateHUD();
-      hint.innerHTML = 'Se te escapó una decisión sin tomar. ¡Sigue atento al cielo!';
-      if (lives <= 0) endGame(false);
     }
 
-    function flashBasket(basketEl) {
-      basketEl.classList.add('is-hit');
-      setTimeout(() => basketEl.classList.remove('is-hit'), 220);
+    function flashBasket(basketEl, danger = false) {
+      basketEl.classList.add(danger ? 'is-danger' : 'is-hit');
+      setTimeout(() => basketEl.classList.remove(danger ? 'is-danger' : 'is-hit'), 260);
     }
 
-    function catchItem(el) {
+    // Regla de oro del juego: SOLO tocar un acto de Sombra cuesta una vida.
+    // Tocar un acto de Luz siempre suma puntos y NUNCA descuenta vida.
+    function catchItem(el, kind) {
       if (!running) return;
-      // El "lado" se decide por cuál cesta está más cerca en X en el momento del click,
-      // simplificado: el jugador toca el ítem y elige la cesta correspondiente con dos zonas.
-      const stageRect = sky.getBoundingClientRect();
-      const itemRect = el.getBoundingClientRect();
-      const itemCenterX = itemRect.left + itemRect.width / 2 - stageRect.left;
-      const isLeftHalf = itemCenterX < stageRect.width / 2;
-      const chosenSide = isLeftHalf ? 'luz' : 'sombra';
-      const correctSide = el.dataset.correctSide;
-
       cancelAnimationFrame(el.__raf);
-      el.remove();
+      if (el.isConnected) el.remove();
 
-      const basketEl = correctSide === 'luz' ? basketLuz : basketSombra;
-
-      if (chosenSide === correctSide) {
+      if (kind === 'luz') {
         score += 10 + Math.min(streak, 5) * 2;
         streak += 1;
-        flashBasket(basketEl);
+        flashBasket(basketLuz);
         sfx.correct();
         hint.innerHTML = streak >= 3
           ? `¡Racha de ${streak}! Tu árbol de luz está floreciendo 🌿`
-          : 'Bien hecho, esa decisión llegó a la rama correcta.';
+          : '¡Bien hecho! Ese acto de luz llegó a tu árbol.';
       } else {
         lives -= 1;
         streak = 0;
+        flashBasket(basketSombra, true);
         sfx.wrong();
-        hint.innerHTML = 'Esa decisión iba en la otra rama. Observa bien antes de tocar.';
+        hint.innerHTML = 'Esa era una sombra — te costó una vida por tocarla.';
         if (lives <= 0) { updateHUD(); endGame(false); return; }
       }
       updateHUD();
@@ -358,14 +388,14 @@
       running = true;
       startBtn.hidden = true;
       resetBtn.hidden = true;
-      hint.innerHTML = 'Toca cada acto en la mitad de la pantalla que corresponde a su rama: izquierda para <strong>Luz</strong>, derecha para <strong>Sombra</strong>.';
+      hint.innerHTML = 'Toca los actos de <strong>Luz</strong> para sumar puntos. Puedes dejar caer los de <strong>Sombra</strong> sin miedo — solo pierdes una vida si los tocas.';
 
-      let spawnDelay = 1100;
+      let spawnDelay = 1150;
       function loop() {
         if (!running) return;
         spawnItem();
-        fallSpeed = Math.min(fallSpeed + 0.03, 5.5);
-        spawnDelay = Math.max(spawnDelay - 8, 620);
+        fallSpeed = Math.min(fallSpeed + 0.025, 5);
+        spawnDelay = Math.max(spawnDelay - 7, 680);
         spawnTimer = setTimeout(loop, spawnDelay);
       }
       loop();

@@ -158,6 +158,7 @@ h1,h2,h3,h4,p{ margin:0; }
   backdrop-filter: blur(18px) saturate(140%);
   -webkit-backdrop-filter: blur(18px) saturate(140%);
   border-bottom: 1px solid rgba(26,37,56,.08);
+  overflow-x: hidden; /* aísla el header: nada del menú puede sobresalir por los lados */
 }
 .nav__inner{
   max-width: var(--container); margin:0 auto;
@@ -195,11 +196,23 @@ h1,h2,h3,h4,p{ margin:0; }
 
 .nav__mobile{
   display:none; flex-direction:column; gap: .2rem;
-  padding: .5rem 2rem 1.4rem;
-  max-height:0; overflow:hidden;
-  transition: max-height .4s var(--ease-out);
+  position: relative; z-index: 55;
+  /* Estado CERRADO: sin alto, sin padding, invisible y fuera del árbol de foco.
+     Las cuatro propiedades animan juntas para que no quede ningún resto visible. */
+  max-height: 0;
+  padding: 0 2rem;
+  opacity: 0;
+  visibility: hidden;
+  overflow: hidden;
+  transition: max-height .4s var(--ease-out), padding .4s var(--ease-out), opacity .25s ease, visibility 0s linear .4s;
 }
-.nav__mobile.is-open{ max-height: 420px; }
+.nav__mobile.is-open{
+  max-height: 420px;
+  padding: .5rem 2rem 1.4rem;
+  opacity: 1;
+  visibility: visible;
+  transition: max-height .4s var(--ease-out), padding .4s var(--ease-out), opacity .3s ease;
+}
 .nav__mobile a{ padding:.75rem 0; font-weight:600; color: var(--ink-soft); border-bottom:1px solid rgba(26,37,56,.07); }
 .nav__mobile .btn{ margin-top: .9rem; align-self:flex-start; }
 
@@ -398,6 +411,18 @@ main, .footer{ position:relative; z-index:2; }
 .ziro-stage{
   position:relative; width: 300px; height: 340px; display:flex; align-items:flex-end; justify-content:center;
 }
+/* Visor 3D real: invisible hasta que el .glb carga con éxito (ver script.js).
+   Mientras tanto, el fox ilustrado en CSS permanece visible como respaldo. */
+.ziro-model{
+  position:absolute; inset:0; width:100%; height:100%;
+  opacity:0; pointer-events:none;
+  --poster-color: transparent;
+  background-color: transparent;
+  transition: opacity .5s ease;
+}
+.ziro-model.is-active{ opacity:1; pointer-events:auto; cursor:pointer; }
+.ziro-stage.has-model .fox,
+.ziro-stage.has-model .fox__shadow{ opacity:0; pointer-events:none; }
 .ziro-halo{
   position:absolute; bottom:24px; left:50%; transform:translateX(-50%);
   width:190px; height:36px; border-radius:50%;
@@ -517,15 +542,24 @@ main, .footer{ position:relative; z-index:2; }
 }
 .game__stage{
   position:relative; border-radius: var(--radius-md); overflow:hidden;
-  min-height: 380px;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  min-height: 300px;
   background: linear-gradient(180deg, #cfe0ea 0%, #eaf1e6 70%, #dfe9d4 100%);
   display:flex; align-items:flex-end; justify-content:space-between; padding: 0 1.6rem 1.4rem;
+  touch-action: none; /* evita scroll/zoom accidental del navegador al jugar en móvil */
 }
 .game__sky{ position:absolute; inset:0; overflow:hidden; }
 .falling-item{
-  position:absolute; top:-40px; font-size:1.8rem; user-select:none;
+  position:absolute; top:-40px; font-size:1.8rem; line-height:1; user-select:none;
   filter: drop-shadow(0 6px 8px rgba(0,0,0,.15));
   transition: none;
+  /* Hitbox generosa y consistente en escritorio y táctil */
+  width: 48px; height: 48px;
+  display:flex; align-items:center; justify-content:center;
+  background: transparent; border:none; padding:0; margin:0;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 .game__tree{ display:flex; flex-direction:column; align-items:center; gap:.5rem; z-index:2; }
 .game__tree-label{
@@ -541,6 +575,16 @@ main, .footer{ position:relative; z-index:2; }
 .game__tree--light .game__basket{ border-color: rgba(212,175,55,.5); }
 .game__tree--shadow .game__basket{ border-color: rgba(26,37,56,.25); }
 .game__basket.is-hit{ transform: scale(1.18); box-shadow: 0 0 0 8px var(--gold-soft); }
+.game__basket.is-danger{
+  transform: scale(1.12);
+  box-shadow: 0 0 0 8px rgba(193,91,74,.22);
+  animation: basketShake .26s ease;
+}
+@keyframes basketShake{
+  0%,100%{ transform: translateX(0) scale(1.12); }
+  25%{ transform: translateX(-4px) scale(1.12); }
+  75%{ transform: translateX(4px) scale(1.12); }
+}
 
 .game__panel{ display:flex; flex-direction:column; gap:1.2rem; }
 .game__scoreboard{ display:flex; gap:.8rem; }
@@ -790,4 +834,23 @@ main, .footer{ position:relative; z-index:2; }
   .contact{ padding: 4.5rem 0 5rem; }
   .contact__form-wrap{ padding: 1.5rem; }
   .footer__bottom{ flex-direction:column; }
+
+  /* Juego: pantalla más alta en vertical = más recorrido para reaccionar */
+  .game{ padding: 1.1rem; gap: 1.4rem; }
+  .game__stage{ aspect-ratio: 3 / 4; min-height: 360px; padding: 0 1rem 1.1rem; }
+  .game__basket{ width:52px; height:52px; font-size:1.4rem; }
+  .game__tree-label{ font-size:.62rem; padding:.2rem .5rem; }
+  .game__scoreboard{ gap:.5rem; }
+  .game__score{ padding:.7rem .3rem; }
+  .game__score-num{ font-size:1.25rem; }
+  .game__controls{ flex-direction:column; }
+  .game__controls .btn{ width:100%; }
+
+  .ziro-stage{ width: 220px; height: 260px; }
+}
+
+@media (max-width: 400px){
+  .game__stage{ aspect-ratio: 2 / 3; }
+  .game__basket{ width:46px; height:46px; font-size:1.25rem; }
+  .falling-item{ width:40px; height:40px; font-size:1.5rem; }
 }
